@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>意見ビジュアライザー</title>
+<title>考え比べツール</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -205,12 +205,12 @@ body {
   position: relative;
   height: 72px;
   user-select: none;
-  padding: 0 20px;        /* ← ハンドルがここまではみ出せる */
+  padding: 0 20px;
 }
 .bar-track {
   position: absolute;
   top: 0; bottom: 0;
-  left: 20px; right: 20px;  /* padding分だけ内側 */
+  left: 20px; right: 20px;
   border-radius: 6px;
   overflow: hidden;
 }
@@ -257,7 +257,7 @@ body {
 .tick-row {
   position: relative;
   height: 10px;
-  margin: 0 20px;  /* align with bar */
+  margin: 0 20px;
 }
 .tick {
   position: absolute;
@@ -375,15 +375,15 @@ body {
 
 <!-- SELECT -->
 <div id="select-screen">
-  <h1 class="app-title">意見ビジュアライザー</h1>
-  <div class="select-lead">意見の数を選んでください</div>
+  <h1 class="app-title">考え比べツール</h1>
+  <div class="select-lead">考えの数を選んでください</div>
   <div class="select-grid">
     <div class="select-card" onclick="startTool(2)">
       <div class="select-card-swatches">
         <div class="swatch" style="background:var(--c0)"></div>
         <div class="swatch" style="background:repeating-linear-gradient(45deg,var(--c1),var(--c1) 5px,#fffbe8 5px,#fffbe8 10px)"></div>
       </div>
-      <div class="select-card-name">２つの意見</div>
+      <div class="select-card-name">２つの考え</div>
     </div>
     <div class="select-card" onclick="startTool(3)">
       <div class="select-card-swatches">
@@ -391,7 +391,7 @@ body {
         <div class="swatch" style="background:repeating-linear-gradient(45deg,var(--c1),var(--c1) 5px,#fffbe8 5px,#fffbe8 10px)"></div>
         <div class="swatch" style="background:radial-gradient(circle,#fff 35%,transparent 35%) 0 0/10px 10px,var(--c2)"></div>
       </div>
-      <div class="select-card-name">３つの意見</div>
+      <div class="select-card-name">３つの考え</div>
     </div>
   </div>
 </div>
@@ -400,7 +400,7 @@ body {
 <div id="main-screen">
   <div class="top-bar">
     <button class="top-bar-btn" onclick="goBack()">← もどる</button>
-    <div class="top-bar-title">意見ビジュアライザー</div>
+    <div class="top-bar-title">考え比べツール</div>
   </div>
 
   <div class="content">
@@ -426,12 +426,12 @@ body {
   </div>
 
   <div class="slot-bar">
-    <span class="slot-label">スロット</span>
+    <span class="slot-label">セーブスロット</span>
     <button class="slot-btn active" onclick="switchSlot(0)">1</button>
     <button class="slot-btn"        onclick="switchSlot(1)">2</button>
     <button class="slot-btn"        onclick="switchSlot(2)">3</button>
     <button class="slot-btn"        onclick="switchSlot(3)">4</button>
-    <button class="slot-reset-btn"  onclick="resetSlot()">リセット</button>
+    <button class="slot-reset-btn"  onclick="resetSlot()">選択したセーブスロットをリセット</button>
   </div>
 </div>
 
@@ -443,7 +443,7 @@ const PATS    = [
   ()  => `repeating-linear-gradient(45deg,${COLORS[1]},${COLORS[1]} 5px,#fffbe8 5px,#fffbe8 10px)`,
   ()  => `radial-gradient(circle,#fff 35%,transparent 35%) 0 0/10px 10px,${COLORS[2]}`,
 ];
-const LABELS  = ['意見A','意見B','意見C'];
+const LABELS  = ['考え その１','考え その２','考え その３'];
 const MIN_PCT = 0;
 
 // ── state ──────────────────────────────────────
