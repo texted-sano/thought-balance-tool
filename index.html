@@ -134,6 +134,7 @@ body {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 24px;
 }
 
@@ -321,7 +322,35 @@ body {
   display: flex;
   gap: 12px;
   justify-content: center;
+  align-items: center;
   z-index: 100;
+}
+.slot-label {
+  color: #555;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  margin-right: 4px;
+}
+.slot-reset-btn {
+  width: 58px; height: 48px;
+  border: 2px solid #444;
+  border-radius: 8px;
+  background: #222;
+  color: #888;
+  font-size: 0.72rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 8px;
+  transition: border-color 0.12s, color 0.12s;
+}
+.slot-reset-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 .slot-btn {
   width: 76px; height: 48px;
@@ -397,10 +426,12 @@ body {
   </div>
 
   <div class="slot-bar">
+    <span class="slot-label">スロット</span>
     <button class="slot-btn active" onclick="switchSlot(0)">1</button>
     <button class="slot-btn"        onclick="switchSlot(1)">2</button>
     <button class="slot-btn"        onclick="switchSlot(2)">3</button>
     <button class="slot-btn"        onclick="switchSlot(3)">4</button>
+    <button class="slot-reset-btn"  onclick="resetSlot()">リセット</button>
   </div>
 </div>
 
@@ -649,6 +680,12 @@ function updateSlotBar() {
     btn.classList.toggle('active', i === current);
     btn.classList.toggle('used',   i !== current && !!slots[i] && slotHasData(i));
   });
+}
+
+function resetSlot() {
+  slots[current] = makeSlot();
+  loadSlot(current);
+  updateSlotBar();
 }
 
 function slotHasData(i) {
