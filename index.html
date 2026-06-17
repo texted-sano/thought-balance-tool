@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>意見ビジュアライザー</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #f5f5f5;
+  --card: #ffffff;
+  --border: #222222;
+  --accent: #cc0000;
+  --text: #111111;
+  --sub: #666666;
+  --c0: #3db8e8;
+  --c1: #f5a623;
+  --c2: #e85c3a;
+}
+
+body {
+  font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== SELECT SCREEN ===== */
+#select-screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  gap: 36px;
+}
+.app-title {
+  font-size: 2rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+}
+.select-lead {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--sub);
+  padding-left: 14px;
+  border-left: 5px solid var(--accent);
+  letter-spacing: 0.04em;
+}
+.select-grid {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.select-card {
+  width: 210px;
+  cursor: pointer;
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 36px 16px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  transition: outline 0.1s;
+}
+.select-card:hover {
+  border-color: transparent;
+  outline: 3px solid var(--accent);
+  outline-offset: -1px;
+}
+.select-card-swatches {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.swatch {
+  width: 52px;
+  height: 40px;
+  border-radius: 4px;
+  border: 1.5px solid rgba(0,0,0,0.12);
+}
+.select-card-name {
+  font-size: 1.1rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+}
+
+/* ===== MAIN SCREEN ===== */
+#main-screen {
+  display: none;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.top-bar {
+  background: #111;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  height: 52px;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.top-bar-btn {
+  background: rgba(255,255,255,0.14);
+  border: none; color: #fff; border-radius: 7px;
+  padding: 0 14px; cursor: pointer;
+  font-size: 0.82rem; font-weight: 700; font-family: inherit;
+  height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.12s;
+}
+.top-bar-btn:hover { background: rgba(255,255,255,0.28); }
+.top-bar-title {
+  flex: 1; text-align: center;
+  font-size: 0.92rem; font-weight: 700;
+  color: rgba(255,255,255,0.6);
+  letter-spacing: 0.06em;
+}
+
+.content {
+  flex: 1;
+  padding: 32px 40px 110px;
+  max-width: 880px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* title */
+.title-input {
+  width: 100%;
+  font-size: 1.15rem;
+  font-weight: 700;
+  font-family: inherit;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 18px;
+  background: var(--card);
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.12s;
+}
+.title-input:focus { border-color: var(--accent); }
+.title-input::placeholder { color: #bbb; font-weight: 400; }
+
+/* legend */
+.legend {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+.legend-swatch {
+  width: 20px; height: 20px;
+  border-radius: 4px;
+  border: 1.5px solid rgba(0,0,0,0.12);
+  flex-shrink: 0;
+}
+
+/* bar area */
+.bar-area {
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 24px 28px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.axis-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--sub);
+  position: relative;
+}
+.axis-labels .mid {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* The bar itself */
+.bar-outer {
+  position: relative;
+  height: 72px;
+  user-select: none;
+  padding: 0 20px;        /* ← ハンドルがここまではみ出せる */
+}
+.bar-track {
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 20px; right: 20px;  /* padding分だけ内側 */
+  border-radius: 6px;
+  overflow: hidden;
+}
+.seg {
+  height: 100%;
+  position: absolute;
+  top: 0;
+}
+/* pct labels sit OVER the bar, outside overflow:hidden */
+.bar-labels {
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 20px; right: 20px;
+  pointer-events: none;
+}
+.pct-lbl {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.88rem;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.45);
+  white-space: nowrap;
+}
+/* drag handles — positioned relative to bar-outer, can go into padding zone */
+.handle {
+  position: absolute;
+  top: 4px; bottom: 4px;
+  width: 14px;
+  transform: translateX(-50%);
+  background: rgba(255,255,255,0.9);
+  border: 2px solid rgba(0,0,0,0.22);
+  border-radius: 4px;
+  cursor: col-resize;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  color: #888;
+}
+/* tick row */
+.tick-row {
+  position: relative;
+  height: 10px;
+  margin: 0 20px;  /* align with bar */
+}
+.tick {
+  position: absolute;
+  top: 0;
+  width: 1px;
+  height: 7px;
+  background: #ccc;
+  transform: translateX(-50%);
+}
+
+/* opinion inputs */
+.opinion-row {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.opinion-item {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--card);
+}
+.opinion-dot {
+  width: 44px;
+  height: 44px;
+  border-radius: 0;
+  flex-shrink: 0;
+  border: none;
+  border-right: 2px solid var(--border);
+}
+.opinion-input {
+  flex: 1;
+  border: none;
+  border-radius: 0;
+  padding: 10px 12px;
+  font-size: 0.92rem;
+  font-family: inherit;
+  font-weight: 700;
+  background: var(--card);
+  color: var(--text);
+  outline: none;
+}
+.opinion-item:focus-within {
+  border-color: var(--accent);
+}
+.opinion-item:focus-within .opinion-dot {
+  border-right-color: var(--accent);
+}
+.opinion-input::placeholder { color: #bbb; font-weight: 400; }
+
+/* slot bar */
+.slot-bar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: #111;
+  padding: 10px 24px 14px;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  z-index: 100;
+}
+.slot-btn {
+  width: 76px; height: 48px;
+  border: 2px solid #444;
+  border-radius: 8px;
+  background: #222;
+  color: #777;
+  font-size: 1.1rem;
+  font-weight: 900;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.12s, color 0.12s;
+}
+.slot-btn.used   { border-color: #555; color: #bbb; }
+.slot-btn.active { border-color: var(--accent); color: #fff; background: #1a1a1a; }
+</style>
+</head>
+<body>
+
+<!-- SELECT -->
+<div id="select-screen">
+  <h1 class="app-title">意見ビジュアライザー</h1>
+  <div class="select-lead">意見の数を選んでください</div>
+  <div class="select-grid">
+    <div class="select-card" onclick="startTool(2)">
+      <div class="select-card-swatches">
+        <div class="swatch" style="background:var(--c0)"></div>
+        <div class="swatch" style="background:repeating-linear-gradient(45deg,var(--c1),var(--c1) 5px,#fffbe8 5px,#fffbe8 10px)"></div>
+      </div>
+      <div class="select-card-name">２つの意見</div>
+    </div>
+    <div class="select-card" onclick="startTool(3)">
+      <div class="select-card-swatches">
+        <div class="swatch" style="background:var(--c0)"></div>
+        <div class="swatch" style="background:repeating-linear-gradient(45deg,var(--c1),var(--c1) 5px,#fffbe8 5px,#fffbe8 10px)"></div>
+        <div class="swatch" style="background:radial-gradient(circle,#fff 35%,transparent 35%) 0 0/10px 10px,var(--c2)"></div>
+      </div>
+      <div class="select-card-name">３つの意見</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="main-screen">
+  <div class="top-bar">
+    <button class="top-bar-btn" onclick="goBack()">← もどる</button>
+    <div class="top-bar-title">意見ビジュアライザー</div>
+  </div>
+
+  <div class="content">
+    <input class="title-input" id="title-input" type="text" placeholder="タイトルを入力">
+
+    <div class="legend" id="legend"></div>
+
+    <div class="bar-area">
+      <div class="axis-labels">
+        <span>0</span>
+        <span class="mid">50</span>
+        <span>100</span>
+      </div>
+      <div class="bar-outer" id="bar-outer">
+        <div class="bar-track" id="bar-track"></div>
+        <div class="bar-labels" id="bar-labels"></div>
+        <!-- handles injected here by JS -->
+      </div>
+      <div class="tick-row" id="tick-row"></div>
+    </div>
+
+    <div class="opinion-row" id="opinion-row"></div>
+  </div>
+
+  <div class="slot-bar">
+    <button class="slot-btn active" onclick="switchSlot(0)">1</button>
+    <button class="slot-btn"        onclick="switchSlot(1)">2</button>
+    <button class="slot-btn"        onclick="switchSlot(2)">3</button>
+    <button class="slot-btn"        onclick="switchSlot(3)">4</button>
+  </div>
+</div>
+
+<script>
+// ── constants ──────────────────────────────────
+const COLORS  = ['#3db8e8','#f5a623','#e85c3a'];
+const PATS    = [
+  (c) => c,
+  ()  => `repeating-linear-gradient(45deg,${COLORS[1]},${COLORS[1]} 5px,#fffbe8 5px,#fffbe8 10px)`,
+  ()  => `radial-gradient(circle,#fff 35%,transparent 35%) 0 0/10px 10px,${COLORS[2]}`,
+];
+const LABELS  = ['意見A','意見B','意見C'];
+const MIN_PCT = 0;
+
+// ── state ──────────────────────────────────────
+let N       = 2;
+let current = 0;
+const slots = [null, null, null, null];
+
+// drag
+let dragging = false;
+let dragIdx  = -1;
+let dragStartX    = 0;
+let dragStartPcts = [];
+let barWidth      = 0;
+
+// ── helpers ────────────────────────────────────
+function pat(i) { return PATS[i](COLORS[i]); }
+
+function makeSlot() {
+  const base = Math.floor(100 / N);
+  const pcts = Array.from({length: N}, (_, i) => base);
+  pcts[N - 1] = 100 - base * (N - 1); // last gets the remainder
+  return { title:'', labels: Array.from({length: N}, (_, i) => LABELS[i]), pcts };
+}
+
+// ── start / back ───────────────────────────────
+function startTool(n) {
+  N = n;
+  slots[0] = makeSlot();
+  current  = 0;
+  document.getElementById('select-screen').style.display = 'none';
+  document.getElementById('main-screen').style.display   = 'flex';
+  buildUI();
+  loadSlot(0);
+}
+
+function goBack() {
+  document.getElementById('main-screen').style.display   = 'none';
+  document.getElementById('select-screen').style.display = 'flex';
+}
+
+// ── build DOM (once) ───────────────────────────
+function buildUI() {
+  // legend
+  const leg = document.getElementById('legend');
+  leg.innerHTML = '';
+  for (let i = 0; i < N; i++) {
+    const item = document.createElement('div');
+    item.className = 'legend-item';
+    const sw = document.createElement('div');
+    sw.className = 'legend-swatch';
+    sw.style.background = pat(i);
+    const txt = document.createElement('span');
+    txt.id = 'leg-txt-' + i;
+    item.appendChild(sw); item.appendChild(txt);
+    leg.appendChild(item);
+  }
+
+  // bar segments
+  const track  = document.getElementById('bar-track');
+  const labDiv = document.getElementById('bar-labels');
+  const outer  = document.getElementById('bar-outer');
+  track.innerHTML = ''; labDiv.innerHTML = '';
+  // remove old handles
+  outer.querySelectorAll('.handle').forEach(h => h.remove());
+
+  for (let i = 0; i < N; i++) {
+    const seg = document.createElement('div');
+    seg.className = 'seg';
+    seg.id = 'seg-' + i;
+    seg.style.background = pat(i);
+    track.appendChild(seg);
+
+    const lbl = document.createElement('div');
+    lbl.className = 'pct-lbl';
+    lbl.id = 'pct-lbl-' + i;
+    labDiv.appendChild(lbl);
+  }
+
+  // handles between segments
+  for (let i = 0; i < N - 1; i++) {
+    const h = document.createElement('div');
+    h.className = 'handle';
+    h.id = 'hdl-' + i;
+    h.textContent = '⋮';
+    h.addEventListener('mousedown',  e => onHandleDown(e, i));
+    h.addEventListener('touchstart', e => onHandleTouchStart(e, i), {passive:false});
+    outer.appendChild(h);
+  }
+
+  // ticks
+  const tickRow = document.getElementById('tick-row');
+  tickRow.innerHTML = '';
+  for (let v = 10; v < 100; v += 10) {
+    const t = document.createElement('div');
+    t.className = 'tick'; t.style.left = v + '%';
+    tickRow.appendChild(t);
+  }
+
+  // opinion inputs
+  const row = document.getElementById('opinion-row');
+  row.innerHTML = '';
+  for (let i = 0; i < N; i++) {
+    const item = document.createElement('div');
+    item.className = 'opinion-item';
+    const dot = document.createElement('div');
+    dot.className = 'opinion-dot';
+    dot.style.background = pat(i);
+    const inp = document.createElement('input');
+    inp.type = 'text'; inp.className = 'opinion-input';
+    inp.id = 'op-inp-' + i;
+    inp.placeholder = LABELS[i];
+    inp.addEventListener('input', () => {
+      slots[current].labels[i] = inp.value || LABELS[i];
+      updateLegendText(i);
+      markUsed();
+    });
+    item.appendChild(dot); item.appendChild(inp);
+    row.appendChild(item);
+  }
+
+  // title listener
+  document.getElementById('title-input').addEventListener('input', () => {
+    slots[current].title = document.getElementById('title-input').value;
+    markUsed();
+  });
+}
+
+// ── render bar & labels ────────────────────────
+function renderBar() {
+  const s = slots[current];
+  if (!s) return;
+  const outer = document.getElementById('bar-outer');
+  const outerW = outer.getBoundingClientRect().width;
+  const PAD = 20;
+  const trackW = outerW - PAD * 2;
+  let cum = 0;
+  for (let i = 0; i < N; i++) {
+    const seg = document.getElementById('seg-' + i);
+    seg.style.left  = (cum / 100 * 100) + '%';
+    seg.style.width = s.pcts[i] + '%';
+    // label centered in segment
+    const lbl = document.getElementById('pct-lbl-' + i);
+    lbl.style.left = (cum + s.pcts[i] / 2) + '%';
+    lbl.textContent = s.pcts[i] + '%';
+    // legend
+    const legTxt = document.getElementById('leg-txt-' + i);
+    if (legTxt) legTxt.textContent = (s.labels[i] || LABELS[i]) + '　' + s.pcts[i] + '%';
+    cum += s.pcts[i];
+    // handle: positioned in bar-outer coords (PAD + cum% of trackW)
+    if (i < N - 1) {
+      const h = document.getElementById('hdl-' + i);
+      if (h) h.style.left = (PAD + cum / 100 * trackW) + 'px';
+    }
+  }
+}
+
+function updateLegendText(i) {
+  const s = slots[current];
+  const el = document.getElementById('leg-txt-' + i);
+  if (el) el.textContent = (s.labels[i] || LABELS[i]) + '　' + s.pcts[i] + '%';
+}
+
+// ── drag ──────────────────────────────────────
+function onHandleDown(e, idx) {
+  e.preventDefault();
+  dragIdx       = idx;
+  dragStartX    = e.clientX;
+  dragStartPcts = [...slots[current].pcts];
+  barWidth = document.getElementById('bar-outer').getBoundingClientRect().width - 40;
+  dragging      = true;
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup',   onMouseUp);
+}
+function onHandleTouchStart(e, idx) {
+  e.preventDefault();
+  dragIdx       = idx;
+  dragStartX    = e.touches[0].clientX;
+  dragStartPcts = [...slots[current].pcts];
+  barWidth = document.getElementById('bar-outer').getBoundingClientRect().width - 40;
+  dragging      = true;
+  document.addEventListener('touchmove', onTouchMove, {passive:false});
+  document.addEventListener('touchend',  onMouseUp);
+}
+function onMouseMove(e) { applyDrag(e.clientX); }
+function onTouchMove(e) { e.preventDefault(); applyDrag(e.touches[0].clientX); }
+function onMouseUp() {
+  dragging = false;
+  document.removeEventListener('mousemove', onMouseMove);
+  document.removeEventListener('mouseup',   onMouseUp);
+  document.removeEventListener('touchmove', onTouchMove);
+  document.removeEventListener('touchend',  onMouseUp);
+  markUsed();
+}
+
+function applyDrag(clientX) {
+  const dx   = clientX - dragStartX;
+  const dpct = Math.round((dx / barWidth) * 100);
+  const pcts = [...dragStartPcts];
+  pcts[dragIdx]     = dragStartPcts[dragIdx]     + dpct;
+  pcts[dragIdx + 1] = dragStartPcts[dragIdx + 1] - dpct;
+  if (pcts[dragIdx]     < MIN_PCT) { pcts[dragIdx+1] += pcts[dragIdx]-MIN_PCT;     pcts[dragIdx]     = MIN_PCT; }
+  if (pcts[dragIdx + 1] < MIN_PCT) { pcts[dragIdx]   += pcts[dragIdx+1]-MIN_PCT;   pcts[dragIdx + 1] = MIN_PCT; }
+  slots[current].pcts = pcts;
+  renderBar();
+}
+
+// ── slots ──────────────────────────────────────
+function switchSlot(idx) {
+  current = idx;
+  if (!slots[idx]) slots[idx] = makeSlot();
+  loadSlot(idx);
+  updateSlotBar();
+}
+
+function loadSlot(idx) {
+  const s = slots[idx];
+  document.getElementById('title-input').value = s.title;
+  for (let i = 0; i < N; i++) {
+    const inp = document.getElementById('op-inp-' + i);
+    if (inp) inp.value = s.labels[i] === LABELS[i] ? '' : s.labels[i];
+    updateLegendText(i);
+  }
+  renderBar();
+  updateSlotBar();
+}
+
+function markUsed() {
+  // already stored reactively; just refresh slot bar
+  updateSlotBar();
+}
+
+function updateSlotBar() {
+  document.querySelectorAll('.slot-btn').forEach((btn, i) => {
+    btn.classList.toggle('active', i === current);
+    btn.classList.toggle('used',   i !== current && !!slots[i] && slotHasData(i));
+  });
+}
+
+function slotHasData(i) {
+  const s = slots[i]; if (!s) return false;
+  return s.title !== '' || s.labels.some((l,j) => l !== LABELS[j]) ||
+    s.pcts.some((p,j) => p !== (j===0 ? 100-Math.floor(100/N)*(N-1) : Math.floor(100/N)));
+}
+
+window.addEventListener('resize', () => { if (slots[current]) renderBar(); });
+</script>
+</body>
+</html>
