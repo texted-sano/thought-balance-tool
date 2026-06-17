@@ -14,9 +14,10 @@
   --accent: #cc0000;
   --text: #111111;
   --sub: #666666;
-  --c0: #3db8e8;
-  --c1: #f5a623;
-  --c2: #e85c3a;
+  --c0: #e85c3a;
+  --c1: #3db8e8;
+  --c2: #f1c40f;
+  --c3: #2ecc71;
 }
 
 body {
@@ -28,107 +29,27 @@ body {
   flex-direction: column;
 }
 
-/* ===== SELECT SCREEN ===== */
 #select-screen {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 48px 24px;
-  gap: 36px;
-}
-.app-title {
-  font-size: 2rem;
-  font-weight: 900;
-  letter-spacing: 0.1em;
-}
-.select-lead {
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--sub);
-  padding-left: 14px;
-  border-left: 5px solid var(--accent);
-  letter-spacing: 0.04em;
-}
-.select-grid {
-  display: flex;
-  gap: 24px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-.select-card {
-  width: 210px;
-  cursor: pointer;
-  background: var(--card);
-  border: 2px solid var(--border);
-  border-radius: 12px;
-  padding: 36px 16px 28px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-  transition: outline 0.1s;
-}
-.select-card:hover {
-  border-color: transparent;
-  outline: 3px solid var(--accent);
-  outline-offset: -1px;
-}
-.select-card-swatches {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-}
-.swatch {
-  width: 52px;
-  height: 40px;
-  border-radius: 4px;
-  border: 1.5px solid rgba(0,0,0,0.12);
-}
-.select-card-name {
-  font-size: 1.1rem;
-  font-weight: 900;
-  letter-spacing: 0.04em;
+  display: none !important;
 }
 
-/* ===== MAIN SCREEN ===== */
 #main-screen {
-  display: none;
+  display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
 
-.top-bar {
-  background: #111;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  padding: 0 16px;
-  height: 52px;
-  gap: 12px;
-  flex-shrink: 0;
-}
-.top-bar-btn {
-  background: rgba(255,255,255,0.14);
-  border: none; color: #fff; border-radius: 7px;
-  padding: 0 14px; cursor: pointer;
-  font-size: 0.82rem; font-weight: 700; font-family: inherit;
-  height: 36px;
-  display: flex; align-items: center; justify-content: center;
-  transition: background 0.12s;
-}
-.top-bar-btn:hover { background: rgba(255,255,255,0.28); }
-.top-bar-title {
-  flex: 1; text-align: center;
-  font-size: 0.92rem; font-weight: 700;
-  color: rgba(255,255,255,0.6);
-  letter-spacing: 0.06em;
+.app-title-main {
+  font-size: 1.8rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-align: center;
+  margin-bottom: 8px;
 }
 
 .content {
   flex: 1;
-  padding: 32px 40px 110px;
+  padding: 32px 40px 160px;
   max-width: 880px;
   width: 100%;
   margin: 0 auto;
@@ -138,7 +59,6 @@ body {
   gap: 24px;
 }
 
-/* title */
 .title-input {
   width: 100%;
   font-size: 1.15rem;
@@ -151,11 +71,11 @@ body {
   color: var(--text);
   outline: none;
   transition: border-color 0.12s;
+  text-align: center;
 }
 .title-input:focus { border-color: var(--accent); }
 .title-input::placeholder { color: #bbb; font-weight: 400; }
 
-/* legend */
 .legend {
   display: flex;
   gap: 20px;
@@ -176,7 +96,6 @@ body {
   flex-shrink: 0;
 }
 
-/* bar area */
 .bar-area {
   background: var(--card);
   border: 2px solid var(--border);
@@ -187,20 +106,22 @@ body {
   gap: 10px;
 }
 .axis-labels {
-  display: flex;
-  justify-content: space-between;
+  position: relative;
+  height: 1.2rem;
   font-size: 0.78rem;
   font-weight: 700;
   color: var(--sub);
-  position: relative;
+  margin: 0 20px;
 }
-.axis-labels .mid {
+.axis-labels span {
   position: absolute;
-  left: 50%;
   transform: translateX(-50%);
+  white-space: nowrap;
 }
+.axis-labels span:nth-child(1) { left: 0%; }
+.axis-labels span:nth-child(2) { left: 50%; }
+.axis-labels span:nth-child(3) { left: 100%; }
 
-/* The bar itself */
 .bar-outer {
   position: relative;
   height: 72px;
@@ -219,7 +140,6 @@ body {
   position: absolute;
   top: 0;
 }
-/* pct labels sit OVER the bar, outside overflow:hidden */
 .bar-labels {
   position: absolute;
   top: 0; bottom: 0;
@@ -236,15 +156,14 @@ body {
   text-shadow: 0 1px 3px rgba(0,0,0,0.45);
   white-space: nowrap;
 }
-/* drag handles — positioned relative to bar-outer, can go into padding zone */
 .handle {
   position: absolute;
-  top: 4px; bottom: 4px;
-  width: 14px;
+  top: 0px; bottom: 0px;
+  width: 16px;
   transform: translateX(-50%);
-  background: rgba(255,255,255,0.9);
-  border: 2px solid rgba(0,0,0,0.22);
-  border-radius: 4px;
+  background: #ffffff;
+  border: 2px solid rgba(0,0,0,0.28);
+  border-radius: 5px;
   cursor: col-resize;
   z-index: 20;
   display: flex;
@@ -253,7 +172,6 @@ body {
   font-size: 0.8rem;
   color: #888;
 }
-/* tick row */
 .tick-row {
   position: relative;
   height: 10px;
@@ -268,12 +186,26 @@ body {
   transform: translateX(-50%);
 }
 
-/* opinion inputs */
 .opinion-row {
   display: flex;
   gap: 14px;
   flex-wrap: wrap;
+  min-height: 110px;
+  align-content: flex-start;
 }
+.opinion-row.grid-2x2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  min-height: 110px;
+}
+@media (max-width: 600px) {
+  .opinion-row.grid-2x2 {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+}
+
 .opinion-item {
   flex: 1;
   min-width: 200px;
@@ -313,47 +245,92 @@ body {
 }
 .opinion-input::placeholder { color: #bbb; font-weight: 400; }
 
-/* slot bar */
 .slot-bar {
   position: fixed;
   bottom: 0; left: 0; right: 0;
   background: #111;
-  padding: 10px 24px 14px;
+  padding: 16px 24px 20px;
   display: flex;
-  gap: 12px;
   justify-content: center;
   align-items: center;
   z-index: 100;
 }
-.slot-label {
-  color: #555;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  margin-right: 4px;
+.slot-bar-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: max-content;
 }
-.slot-reset-btn {
-  width: 58px; height: 48px;
+.mode-select-row, .slots-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: flex-start;
+}
+.mode-label, .slot-label {
+  color: #888;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  width: 100px;
+  text-align: right;
+  flex-shrink: 0;
+  margin-right: 8px;
+}
+.mode-btn {
+  width: 76px;
+  height: 40px;
+  background: #222;
   border: 2px solid #444;
   border-radius: 8px;
-  background: #222;
-  color: #888;
-  font-size: 0.72rem;
+  color: #777;
+  font-size: 0.95rem;
   font-weight: 700;
   font-family: inherit;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-left: 8px;
-  transition: border-color 0.12s, color 0.12s;
+  transition: border-color 0.12s, color 0.12s, background-color 0.12s;
+}
+.mode-btn:hover {
+  border-color: #888;
+  color: #fff;
+  background-color: #2a2a2a;
+}
+.mode-btn.active {
+  border-color: #fff;
+  color: #fff;
+  background-color: #444;
+  font-weight: 900;
+}
+.mode-btn.active:hover {
+  background-color: #555;
+}
+.slot-reset-btn {
+  width: 76px;
+  height: 40px;
+  border: 2px solid #444;
+  border-radius: 8px;
+  background: #222;
+  color: #888;
+  font-size: 0.8rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.12s, color 0.12s, background-color 0.12s;
 }
 .slot-reset-btn:hover {
-  border-color: var(--accent);
-  color: var(--accent);
+  border-color: #cc0000;
+  color: #fff;
+  background-color: #331111;
 }
 .slot-btn {
-  width: 76px; height: 48px;
+  width: 76px;
+  height: 40px;
   border: 2px solid #444;
   border-radius: 8px;
   background: #222;
@@ -365,45 +342,27 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: border-color 0.12s, color 0.12s;
+  transition: border-color 0.12s, color 0.12s, background-color 0.12s;
+}
+.slot-btn:hover {
+  border-color: #888;
+  color: #fff;
+  background-color: #2a2a2a;
 }
 .slot-btn.used   { border-color: #555; color: #bbb; }
-.slot-btn.active { border-color: var(--accent); color: #fff; background: #1a1a1a; }
+.slot-btn.active { border-color: #fff; color: #fff; background-color: #444; font-weight: 900; }
+.slot-btn.active:hover {
+  background-color: #555;
+}
 </style>
 </head>
 <body>
 
-<!-- SELECT -->
-<div id="select-screen">
-  <h1 class="app-title">考え比べツール</h1>
-  <div class="select-lead">考えの数を選んでください</div>
-  <div class="select-grid">
-    <div class="select-card" onclick="startTool(2)">
-      <div class="select-card-swatches">
-        <div class="swatch" style="background:var(--c0)"></div>
-        <div class="swatch" style="background:repeating-linear-gradient(45deg,var(--c1),var(--c1) 5px,#fffbe8 5px,#fffbe8 10px)"></div>
-      </div>
-      <div class="select-card-name">２つの考え</div>
-    </div>
-    <div class="select-card" onclick="startTool(3)">
-      <div class="select-card-swatches">
-        <div class="swatch" style="background:var(--c0)"></div>
-        <div class="swatch" style="background:repeating-linear-gradient(45deg,var(--c1),var(--c1) 5px,#fffbe8 5px,#fffbe8 10px)"></div>
-        <div class="swatch" style="background:radial-gradient(circle,#fff 35%,transparent 35%) 0 0/10px 10px,var(--c2)"></div>
-      </div>
-      <div class="select-card-name">３つの考え</div>
-    </div>
-  </div>
-</div>
+<div id="select-screen"></div>
 
-<!-- MAIN -->
 <div id="main-screen">
-  <div class="top-bar">
-    <button class="top-bar-btn" onclick="goBack()">← もどる</button>
-    <div class="top-bar-title">考え比べツール</div>
-  </div>
-
   <div class="content">
+    <h1 class="app-title-main">考え比べツール</h1>
     <input class="title-input" id="title-input" type="text" placeholder="タイトルを入力">
 
     <div class="legend" id="legend"></div>
@@ -411,290 +370,372 @@ body {
     <div class="bar-area">
       <div class="axis-labels">
         <span>0</span>
-        <span class="mid">50</span>
+        <span>50</span>
         <span>100</span>
       </div>
+      <div class="tick-row" id="tick-row"></div>
       <div class="bar-outer" id="bar-outer">
         <div class="bar-track" id="bar-track"></div>
         <div class="bar-labels" id="bar-labels"></div>
-        <!-- handles injected here by JS -->
       </div>
-      <div class="tick-row" id="tick-row"></div>
     </div>
 
     <div class="opinion-row" id="opinion-row"></div>
   </div>
 
   <div class="slot-bar">
-    <span class="slot-label">セーブスロット</span>
-    <button class="slot-btn active" onclick="switchSlot(0)">1</button>
-    <button class="slot-btn"        onclick="switchSlot(1)">2</button>
-    <button class="slot-btn"        onclick="switchSlot(2)">3</button>
-    <button class="slot-btn"        onclick="switchSlot(3)">4</button>
-    <button class="slot-reset-btn"  onclick="resetSlot()">リセット</button>
+    <div class="slot-bar-inner">
+      <div class="mode-select-row">
+        <span class="mode-label">考えの数</span>
+        <button class="mode-btn active" id="mode-btn-2" onclick="app.changeN(2)">2つ</button>
+        <button class="mode-btn"        id="mode-btn-3" onclick="app.changeN(3)">3つ</button>
+        <button class="mode-btn"        id="mode-btn-4" onclick="app.changeN(4)">4つ</button>
+      </div>
+      <div class="slots-row">
+        <span class="slot-label">セーブスロット</span>
+        <button class="slot-btn active" onclick="app.switchSlot(0)">1</button>
+        <button class="slot-btn"        onclick="app.switchSlot(1)">2</button>
+        <button class="slot-btn"        onclick="app.switchSlot(2)">3</button>
+        <button class="slot-btn"        onclick="app.switchSlot(3)">4</button>
+        <button class="slot-reset-btn"  onclick="app.resetSlot()">リセット</button>
+      </div>
+    </div>
   </div>
 </div>
 
 <script>
-// ── constants ──────────────────────────────────
-const COLORS  = ['#3db8e8','#f5a623','#e85c3a'];
-const PATS    = [
-  (c) => c,
-  ()  => `repeating-linear-gradient(45deg,${COLORS[1]},${COLORS[1]} 5px,#fffbe8 5px,#fffbe8 10px)`,
-  ()  => `radial-gradient(circle,#fff 35%,transparent 35%) 0 0/10px 10px,${COLORS[2]}`,
-];
-const LABELS  = ['考えその１','考えその２','考えその３'];
-const MIN_PCT = 0;
+class ThinkCompareApp {
+  constructor() {
+    this.SETTINGS = {
+      STORAGE_KEY: 'think_compare_slots_v6',
+      COLORS: ['#e85c3a', '#3db8e8', '#f1c40f', '#2ecc71'],
+      LABELS: ['考えその１', '考えその２', '考えその３', '考えその４'],
+      MIN_PCT: 0
+    };
 
-// ── state ──────────────────────────────────────
-let N       = 2;
-let current = 0;
-const slots = [null, null, null, null];
+    this.N = 2;
+    this.current = 0;
+    this.slots = [null, null, null, null];
 
-// drag
-let dragging = false;
-let dragIdx  = -1;
-let dragStartX    = 0;
-let dragStartPcts = [];
-let barWidth      = 0;
-
-// ── helpers ────────────────────────────────────
-function pat(i) { return PATS[i](COLORS[i]); }
-
-function makeSlot() {
-  const base = Math.floor(100 / N);
-  const pcts = Array.from({length: N}, (_, i) => base);
-  pcts[N - 1] = 100 - base * (N - 1); // last gets the remainder
-  return { title:'', labels: Array.from({length: N}, (_, i) => LABELS[i]), pcts };
-}
-
-// ── start / back ───────────────────────────────
-function startTool(n) {
-  N = n;
-  slots[0] = makeSlot();
-  current  = 0;
-  document.getElementById('select-screen').style.display = 'none';
-  document.getElementById('main-screen').style.display   = 'flex';
-  buildUI();
-  loadSlot(0);
-}
-
-function goBack() {
-  document.getElementById('main-screen').style.display   = 'none';
-  document.getElementById('select-screen').style.display = 'flex';
-}
-
-// ── build DOM (once) ───────────────────────────
-function buildUI() {
-  // legend
-  const leg = document.getElementById('legend');
-  leg.innerHTML = '';
-  for (let i = 0; i < N; i++) {
-    const item = document.createElement('div');
-    item.className = 'legend-item';
-    const sw = document.createElement('div');
-    sw.className = 'legend-swatch';
-    sw.style.background = pat(i);
-    const txt = document.createElement('span');
-    txt.id = 'leg-txt-' + i;
-    item.appendChild(sw); item.appendChild(txt);
-    leg.appendChild(item);
+    this.dragging = false;
+    this.dragIdx = -1;
+    this.dragStartX = 0;
+    this.dragStartPcts = [];
+    this.barWidth = 0;
   }
 
-  // bar segments
-  const track  = document.getElementById('bar-track');
-  const labDiv = document.getElementById('bar-labels');
-  const outer  = document.getElementById('bar-outer');
-  track.innerHTML = ''; labDiv.innerHTML = '';
-  // remove old handles
-  outer.querySelectorAll('.handle').forEach(h => h.remove());
+  init() {
+    this.loadSlots();
+    this.N = this.slots[0].N;
+    this.current = 0;
 
-  for (let i = 0; i < N; i++) {
-    const seg = document.createElement('div');
-    seg.className = 'seg';
-    seg.id = 'seg-' + i;
-    seg.style.background = pat(i);
-    track.appendChild(seg);
+    this.buildUI();
+    this.loadSlot(0);
 
-    const lbl = document.createElement('div');
-    lbl.className = 'pct-lbl';
-    lbl.id = 'pct-lbl-' + i;
-    labDiv.appendChild(lbl);
+    window.addEventListener('resize', () => this.handleResize());
   }
 
-  // handles between segments
-  for (let i = 0; i < N - 1; i++) {
-    const h = document.createElement('div');
-    h.className = 'handle';
-    h.id = 'hdl-' + i;
-    h.textContent = '⋮';
-    h.addEventListener('mousedown',  e => onHandleDown(e, i));
-    h.addEventListener('touchstart', e => onHandleTouchStart(e, i), {passive:false});
-    outer.appendChild(h);
+  getColor(i) {
+    return this.SETTINGS.COLORS[i];
   }
 
-  // ticks
-  const tickRow = document.getElementById('tick-row');
-  tickRow.innerHTML = '';
-  for (let v = 10; v < 100; v += 10) {
-    const t = document.createElement('div');
-    t.className = 'tick'; t.style.left = v + '%';
-    tickRow.appendChild(t);
+  makeSlot(targetN = this.N) {
+    const base = Math.floor(100 / targetN);
+    const pcts = Array.from({length: targetN}, (_, i) => base);
+    pcts[targetN - 1] = 100 - base * (targetN - 1);
+    return {
+      N: targetN,
+      title: '',
+      labels: Array.from({length: targetN}, (_, i) => this.SETTINGS.LABELS[i]),
+      pcts
+    };
   }
 
-  // opinion inputs
-  const row = document.getElementById('opinion-row');
-  row.innerHTML = '';
-  for (let i = 0; i < N; i++) {
-    const item = document.createElement('div');
-    item.className = 'opinion-item';
-    const dot = document.createElement('div');
-    dot.className = 'opinion-dot';
-    dot.style.background = pat(i);
-    const inp = document.createElement('input');
-    inp.type = 'text'; inp.className = 'opinion-input';
-    inp.id = 'op-inp-' + i;
-    inp.placeholder = LABELS[i];
-    inp.addEventListener('input', () => {
-      slots[current].labels[i] = inp.value || LABELS[i];
-      updateLegendText(i);
-      markUsed();
-    });
-    item.appendChild(dot); item.appendChild(inp);
-    row.appendChild(item);
-  }
-
-  // title listener
-  document.getElementById('title-input').addEventListener('input', () => {
-    slots[current].title = document.getElementById('title-input').value;
-    markUsed();
-  });
-}
-
-// ── render bar & labels ────────────────────────
-function renderBar() {
-  const s = slots[current];
-  if (!s) return;
-  const outer = document.getElementById('bar-outer');
-  const outerW = outer.getBoundingClientRect().width;
-  const PAD = 20;
-  const trackW = outerW - PAD * 2;
-  let cum = 0;
-  for (let i = 0; i < N; i++) {
-    const seg = document.getElementById('seg-' + i);
-    seg.style.left  = (cum / 100 * 100) + '%';
-    seg.style.width = s.pcts[i] + '%';
-    // label centered in segment
-    const lbl = document.getElementById('pct-lbl-' + i);
-    lbl.style.left = (cum + s.pcts[i] / 2) + '%';
-    lbl.textContent = s.pcts[i] + '%';
-    // legend
-    const legTxt = document.getElementById('leg-txt-' + i);
-    if (legTxt) legTxt.textContent = (s.labels[i] || LABELS[i]) + '　' + s.pcts[i] + '%';
-    cum += s.pcts[i];
-    // handle: positioned in bar-outer coords (PAD + cum% of trackW)
-    if (i < N - 1) {
-      const h = document.getElementById('hdl-' + i);
-      if (h) h.style.left = (PAD + cum / 100 * trackW) + 'px';
+  saveSlots() {
+    try {
+      localStorage.setItem(this.SETTINGS.STORAGE_KEY, JSON.stringify(this.slots));
+    } catch (e) {
+      console.warn('Save failed:', e);
     }
   }
-}
 
-function updateLegendText(i) {
-  const s = slots[current];
-  const el = document.getElementById('leg-txt-' + i);
-  if (el) el.textContent = (s.labels[i] || LABELS[i]) + '　' + s.pcts[i] + '%';
-}
-
-// ── drag ──────────────────────────────────────
-function onHandleDown(e, idx) {
-  e.preventDefault();
-  dragIdx       = idx;
-  dragStartX    = e.clientX;
-  dragStartPcts = [...slots[current].pcts];
-  barWidth = document.getElementById('bar-outer').getBoundingClientRect().width - 40;
-  dragging      = true;
-  document.addEventListener('mousemove', onMouseMove);
-  document.addEventListener('mouseup',   onMouseUp);
-}
-function onHandleTouchStart(e, idx) {
-  e.preventDefault();
-  dragIdx       = idx;
-  dragStartX    = e.touches[0].clientX;
-  dragStartPcts = [...slots[current].pcts];
-  barWidth = document.getElementById('bar-outer').getBoundingClientRect().width - 40;
-  dragging      = true;
-  document.addEventListener('touchmove', onTouchMove, {passive:false});
-  document.addEventListener('touchend',  onMouseUp);
-}
-function onMouseMove(e) { applyDrag(e.clientX); }
-function onTouchMove(e) { e.preventDefault(); applyDrag(e.touches[0].clientX); }
-function onMouseUp() {
-  dragging = false;
-  document.removeEventListener('mousemove', onMouseMove);
-  document.removeEventListener('mouseup',   onMouseUp);
-  document.removeEventListener('touchmove', onTouchMove);
-  document.removeEventListener('touchend',  onMouseUp);
-  markUsed();
-}
-
-function applyDrag(clientX) {
-  const dx   = clientX - dragStartX;
-  const dpct = Math.round((dx / barWidth) * 100);
-  const pcts = [...dragStartPcts];
-  pcts[dragIdx]     = dragStartPcts[dragIdx]     + dpct;
-  pcts[dragIdx + 1] = dragStartPcts[dragIdx + 1] - dpct;
-  if (pcts[dragIdx]     < MIN_PCT) { pcts[dragIdx+1] += pcts[dragIdx]-MIN_PCT;     pcts[dragIdx]     = MIN_PCT; }
-  if (pcts[dragIdx + 1] < MIN_PCT) { pcts[dragIdx]   += pcts[dragIdx+1]-MIN_PCT;   pcts[dragIdx + 1] = MIN_PCT; }
-  slots[current].pcts = pcts;
-  renderBar();
-}
-
-// ── slots ──────────────────────────────────────
-function switchSlot(idx) {
-  current = idx;
-  if (!slots[idx]) slots[idx] = makeSlot();
-  loadSlot(idx);
-  updateSlotBar();
-}
-
-function loadSlot(idx) {
-  const s = slots[idx];
-  document.getElementById('title-input').value = s.title;
-  for (let i = 0; i < N; i++) {
-    const inp = document.getElementById('op-inp-' + i);
-    if (inp) inp.value = s.labels[i] === LABELS[i] ? '' : s.labels[i];
-    updateLegendText(i);
+  loadSlots() {
+    try {
+      const data = localStorage.getItem(this.SETTINGS.STORAGE_KEY);
+      if (data) {
+        const parsed = JSON.parse(data);
+        for (let i = 0; i < this.slots.length; i++) {
+          const item = parsed[i];
+          if (item && item.N && [2,3,4].includes(item.N) && item.pcts && item.pcts.length === item.N) {
+            this.slots[i] = item;
+          } else {
+            this.slots[i] = this.makeSlot(2);
+          }
+        }
+      } else {
+        for (let i = 0; i < this.slots.length; i++) {
+          this.slots[i] = this.makeSlot(2);
+        }
+      }
+    } catch (e) {
+      console.warn('Load failed:', e);
+      for (let i = 0; i < this.slots.length; i++) {
+        this.slots[i] = this.makeSlot(2);
+      }
+    }
   }
-  renderBar();
-  updateSlotBar();
+
+  changeN(targetN) {
+    if (this.N === targetN) return;
+    this.slots[this.current] = this.makeSlot(targetN);
+    this.N = targetN;
+    this.saveSlots();
+    this.buildUI();
+    this.loadSlot(this.current);
+  }
+
+  updateModeButtons() {
+    document.querySelectorAll('.mode-btn').forEach(btn => {
+      btn.classList.remove('active');
+    });
+    const activeBtn = document.getElementById('mode-btn-' + this.N);
+    if (activeBtn) activeBtn.classList.add('active');
+  }
+
+  buildUI() {
+    const leg = document.getElementById('legend');
+    leg.innerHTML = '';
+    for (let i = 0; i < this.N; i++) {
+      const item = document.createElement('div');
+      item.className = 'legend-item';
+      const sw = document.createElement('div');
+      sw.className = 'legend-swatch';
+      sw.style.background = this.getColor(i);
+      const txt = document.createElement('span');
+      txt.id = 'leg-txt-' + i;
+      item.appendChild(sw); item.appendChild(txt);
+      leg.appendChild(item);
+    }
+
+    const track  = document.getElementById('bar-track');
+    const labDiv = document.getElementById('bar-labels');
+    const outer  = document.getElementById('bar-outer');
+    track.innerHTML = ''; labDiv.innerHTML = '';
+    outer.querySelectorAll('.handle').forEach(h => h.remove());
+
+    for (let i = 0; i < this.N; i++) {
+      const seg = document.createElement('div');
+      seg.className = 'seg';
+      seg.id = 'seg-' + i;
+      seg.style.background = this.getColor(i);
+      track.appendChild(seg);
+
+      const lbl = document.createElement('div');
+      lbl.className = 'pct-lbl';
+      lbl.id = 'pct-lbl-' + i;
+      labDiv.appendChild(lbl);
+    }
+
+    for (let i = 0; i < this.N - 1; i++) {
+      const h = document.createElement('div');
+      h.className = 'handle';
+      h.id = 'hdl-' + i;
+      h.textContent = '⋮';
+      h.addEventListener('mousedown',  e => this.onHandleDown(e, i));
+      h.addEventListener('touchstart', e => this.onHandleTouchStart(e, i), {passive:false});
+      outer.appendChild(h);
+    }
+
+    const tickRow = document.getElementById('tick-row');
+    tickRow.innerHTML = '';
+    for (let v = 0; v <= 100; v += 10) {
+      const t = document.createElement('div');
+      t.className = 'tick'; t.style.left = v + '%';
+      tickRow.appendChild(t);
+    }
+
+    const row = document.getElementById('opinion-row');
+    row.innerHTML = '';
+    if (this.N === 4) {
+      row.classList.add('grid-2x2');
+    } else {
+      row.classList.remove('grid-2x2');
+    }
+
+    for (let i = 0; i < this.N; i++) {
+      const item = document.createElement('div');
+      item.className = 'opinion-item';
+      const dot = document.createElement('div');
+      dot.className = 'opinion-dot';
+      dot.style.background = this.getColor(i);
+      const inp = document.createElement('input');
+      inp.type = 'text'; inp.className = 'opinion-input';
+      inp.id = 'op-inp-' + i;
+      inp.placeholder = this.SETTINGS.LABELS[i];
+      inp.addEventListener('input', () => {
+        this.slots[this.current].labels[i] = inp.value || this.SETTINGS.LABELS[i];
+        this.updateLegendText(i);
+        this.markUsed();
+      });
+      item.appendChild(dot); item.appendChild(inp);
+      row.appendChild(item);
+    }
+
+    const oldTitleInput = document.getElementById('title-input');
+    const newTitleInput = oldTitleInput.cloneNode(true);
+    oldTitleInput.parentNode.replaceChild(newTitleInput, oldTitleInput);
+    newTitleInput.addEventListener('input', () => {
+      this.slots[this.current].title = newTitleInput.value;
+      this.markUsed();
+    });
+  }
+
+  renderBar() {
+    const s = this.slots[this.current];
+    if (!s) return;
+    const outer = document.getElementById('bar-outer');
+    const outerW = outer.getBoundingClientRect().width;
+    const PAD = 20;
+    const trackW = outerW - PAD * 2;
+    let cum = 0;
+    for (let i = 0; i < this.N; i++) {
+      const seg = document.getElementById('seg-' + i);
+      if (seg) {
+        seg.style.left  = (cum / 100 * 100) + '%';
+        seg.style.width = s.pcts[i] + '%';
+      }
+      const lbl = document.getElementById('pct-lbl-' + i);
+      if (lbl) {
+        lbl.style.left = (cum + s.pcts[i] / 2) + '%';
+        lbl.textContent = s.pcts[i] + '%';
+      }
+      const legTxt = document.getElementById('leg-txt-' + i);
+      if (legTxt) legTxt.textContent = (s.labels[i] || this.SETTINGS.LABELS[i]) + '　' + s.pcts[i] + '%';
+      cum += s.pcts[i];
+      
+      if (i < this.N - 1) {
+        const h = document.getElementById('hdl-' + i);
+        if (h) h.style.left = (PAD + cum / 100 * trackW) + 'px';
+      }
+    }
+  }
+
+  updateLegendText(i) {
+    const s = this.slots[this.current];
+    const el = document.getElementById('leg-txt-' + i);
+    if (el) el.textContent = (s.labels[i] || this.SETTINGS.LABELS[i]) + '　' + s.pcts[i] + '%';
+  }
+
+  onHandleDown(e, idx) {
+    e.preventDefault();
+    this.dragIdx       = idx;
+    this.dragStartX    = e.clientX;
+    this.dragStartPcts = [...this.slots[this.current].pcts];
+    this.barWidth = document.getElementById('bar-outer').getBoundingClientRect().width - 40;
+    this.dragging      = true;
+    
+    this._boundMouseMove = (evt) => this.onMouseMove(evt);
+    this._boundMouseUp = () => this.onMouseUp();
+    
+    document.addEventListener('mousemove', this._boundMouseMove);
+    document.addEventListener('mouseup',   this._boundMouseUp);
+  }
+
+  onHandleTouchStart(e, idx) {
+    e.preventDefault();
+    this.dragIdx       = idx;
+    this.dragStartX    = e.touches[0].clientX;
+    this.dragStartPcts = [...this.slots[this.current].pcts];
+    this.barWidth = document.getElementById('bar-outer').getBoundingClientRect().width - 40;
+    this.dragging      = true;
+    
+    this._boundTouchMove = (evt) => this.onTouchMove(evt);
+    this._boundMouseUp = () => this.onMouseUp();
+
+    document.addEventListener('touchmove', this._boundTouchMove, {passive:false});
+    document.addEventListener('touchend',  this._boundMouseUp);
+  }
+
+  onMouseMove(e) { this.applyDrag(e.clientX); }
+  onTouchMove(e) { e.preventDefault(); this.applyDrag(e.touches[0].clientX); }
+
+  onMouseUp() {
+    this.dragging = false;
+    document.removeEventListener('mousemove', this._boundMouseMove);
+    document.removeEventListener('mouseup',   this._boundMouseUp);
+    document.removeEventListener('touchmove', this._boundTouchMove);
+    document.removeEventListener('touchend',  this._boundMouseUp);
+    this.markUsed();
+  }
+
+  applyDrag(clientX) {
+    const dx   = clientX - this.dragStartX;
+    const dpct = Math.round((dx / this.barWidth) * 100);
+    const pcts = [...this.dragStartPcts];
+    pcts[this.dragIdx]     = this.dragStartPcts[this.dragIdx]     + dpct;
+    pcts[this.dragIdx + 1] = this.dragStartPcts[this.dragIdx + 1] - dpct;
+    if (pcts[this.dragIdx]     < this.SETTINGS.MIN_PCT) { pcts[this.dragIdx+1] += pcts[this.dragIdx]-this.SETTINGS.MIN_PCT;     pcts[this.dragIdx]     = this.SETTINGS.MIN_PCT; }
+    if (pcts[this.dragIdx + 1] < this.SETTINGS.MIN_PCT) { pcts[this.dragIdx]   += pcts[this.dragIdx+1]-this.SETTINGS.MIN_PCT;   pcts[this.dragIdx + 1] = this.SETTINGS.MIN_PCT; }
+    this.slots[this.current].pcts = pcts;
+    this.renderBar();
+  }
+
+  switchSlot(idx) {
+    this.current = idx;
+    this.loadSlot(idx);
+  }
+
+  loadSlot(idx) {
+    const s = this.slots[idx];
+    if (!s) return;
+    this.N = s.N;
+    this.buildUI();
+    this.updateModeButtons();
+    document.getElementById('title-input').value = s.title;
+    for (let i = 0; i < this.N; i++) {
+      const inp = document.getElementById('op-inp-' + i);
+      if (inp) inp.value = s.labels[i] === this.SETTINGS.LABELS[i] ? '' : s.labels[i];
+      this.updateLegendText(i);
+    }
+    this.renderBar();
+    this.updateSlotBar();
+  }
+
+  markUsed() {
+    this.saveSlots();
+    this.updateSlotBar();
+  }
+
+  updateSlotBar() {
+    document.querySelectorAll('.slot-btn').forEach((btn, i) => {
+      btn.classList.toggle('active', i === this.current);
+      btn.classList.toggle('used',   i !== this.current && !!this.slots[i] && this.slotHasData(i));
+    });
+  }
+
+  resetSlot() {
+    this.slots[this.current] = this.makeSlot(2);
+    this.loadSlot(this.current);
+    this.saveSlots();
+  }
+
+  slotHasData(i) {
+    const s = this.slots[i]; if (!s) return false;
+    const defaultSlot = this.makeSlot(s.N);
+    return s.title !== '' || s.labels.some((l,j) => l !== this.SETTINGS.LABELS[j]) ||
+      s.pcts.some((p,j) => p !== defaultSlot.pcts[j]);
+  }
+
+  handleResize() {
+    if (this.slots[this.current]) this.renderBar();
+  }
 }
 
-function markUsed() {
-  // already stored reactively; just refresh slot bar
-  updateSlotBar();
-}
-
-function updateSlotBar() {
-  document.querySelectorAll('.slot-btn').forEach((btn, i) => {
-    btn.classList.toggle('active', i === current);
-    btn.classList.toggle('used',   i !== current && !!slots[i] && slotHasData(i));
-  });
-}
-
-function resetSlot() {
-  slots[current] = makeSlot();
-  loadSlot(current);
-  updateSlotBar();
-}
-
-function slotHasData(i) {
-  const s = slots[i]; if (!s) return false;
-  return s.title !== '' || s.labels.some((l,j) => l !== LABELS[j]) ||
-    s.pcts.some((p,j) => p !== (j===0 ? 100-Math.floor(100/N)*(N-1) : Math.floor(100/N)));
-}
-
-window.addEventListener('resize', () => { if (slots[current]) renderBar(); });
+let app;
+document.addEventListener('DOMContentLoaded', () => {
+  app = new ThinkCompareApp();
+  app.init();
+});
 </script>
 </body>
 </html>
