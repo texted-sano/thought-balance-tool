@@ -404,12 +404,15 @@ body {
 
 <script>
 class ThinkCompareApp {
+
+  // ===== INIT =====
   constructor() {
     this.SETTINGS = {
       STORAGE_KEY: 'think_compare_slots_v6',
       COLORS: ['#e85c3a', '#3db8e8', '#f1c40f', '#2ecc71'],
       LABELS: ['考えその１', '考えその２', '考えその３', '考えその４'],
-      MIN_PCT: 0
+      MIN_PCT: 0,
+      BAR_PAD: 20
     };
 
     this.N = 2;
@@ -434,6 +437,7 @@ class ThinkCompareApp {
     window.addEventListener('resize', () => this.handleResize());
   }
 
+  // ===== SLOT DATA =====
   getColor(i) {
     return this.SETTINGS.COLORS[i];
   }
@@ -484,6 +488,7 @@ class ThinkCompareApp {
     }
   }
 
+  // ===== MODE (N) CONTROL =====
   changeN(targetN) {
     if (this.N === targetN) return;
     this.slots[this.current] = this.makeSlot(targetN);
@@ -501,6 +506,7 @@ class ThinkCompareApp {
     if (activeBtn) activeBtn.classList.add('active');
   }
 
+  // ===== UI BUILD =====
   buildUI() {
     const leg = document.getElementById('legend');
     leg.innerHTML = '';
@@ -589,12 +595,13 @@ class ThinkCompareApp {
     });
   }
 
+  // ===== RENDER =====
   renderBar() {
     const s = this.slots[this.current];
     if (!s) return;
     const outer = document.getElementById('bar-outer');
     const outerW = outer.getBoundingClientRect().width;
-    const PAD = 20;
+    const PAD = this.SETTINGS.BAR_PAD;
     const trackW = outerW - PAD * 2;
     let cum = 0;
     for (let i = 0; i < this.N; i++) {
@@ -625,12 +632,13 @@ class ThinkCompareApp {
     if (el) el.textContent = (s.labels[i] || this.SETTINGS.LABELS[i]) + '　' + s.pcts[i] + '%';
   }
 
+  // ===== DRAG HANDLER =====
   onHandleDown(e, idx) {
     e.preventDefault();
     this.dragIdx       = idx;
     this.dragStartX    = e.clientX;
     this.dragStartPcts = [...this.slots[this.current].pcts];
-    this.barWidth = document.getElementById('bar-outer').getBoundingClientRect().width - 40;
+    this.barWidth = document.getElementById('bar-outer').getBoundingClientRect().width - this.SETTINGS.BAR_PAD * 2;
     this.dragging      = true;
     
     this._boundMouseMove = (evt) => this.onMouseMove(evt);
@@ -645,7 +653,7 @@ class ThinkCompareApp {
     this.dragIdx       = idx;
     this.dragStartX    = e.touches[0].clientX;
     this.dragStartPcts = [...this.slots[this.current].pcts];
-    this.barWidth = document.getElementById('bar-outer').getBoundingClientRect().width - 40;
+    this.barWidth = document.getElementById('bar-outer').getBoundingClientRect().width - this.SETTINGS.BAR_PAD * 2;
     this.dragging      = true;
     
     this._boundTouchMove = (evt) => this.onTouchMove(evt);
@@ -679,6 +687,7 @@ class ThinkCompareApp {
     this.renderBar();
   }
 
+  // ===== SLOT SWITCH =====
   switchSlot(idx) {
     this.current = idx;
     this.loadSlot(idx);
@@ -725,6 +734,7 @@ class ThinkCompareApp {
       s.pcts.some((p,j) => p !== defaultSlot.pcts[j]);
   }
 
+  // ===== RESIZE =====
   handleResize() {
     if (this.slots[this.current]) this.renderBar();
   }
